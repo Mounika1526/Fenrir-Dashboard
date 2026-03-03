@@ -36,7 +36,7 @@ function CircularProgress({ value, label }) {
   const r = 44, circ = 2 * Math.PI * r
   const offset = circ - (value / 100) * circ
   return (
-    <div className="relative w-28 h-28 flex-shrink-0">
+    <div className="relative w-28 h-28 shrink-0">
       <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
         <circle cx="50" cy="50" r={r} fill="#111" stroke="#222" strokeWidth="6" />
         <circle
@@ -96,7 +96,7 @@ function StepTracker({ steps, activeStep }) {
         const renderIcon = stepIcons[step] || stepIcons.Spidering
         return (
           <div key={step} className="flex items-start flex-1 min-w-0">
-            <div className="flex flex-col items-center flex-shrink-0">
+            <div className="flex flex-col items-center shrink-0">
               <div className={`w-9 h-9 rounded-full flex items-center justify-center border-2 transition-colors
                 ${isActive ? 'bg-[#0CC8A8] border-[#0CC8A8]' :
                   isDone   ? 'bg-[#0CC8A8]/20 border-[#0CC8A8]' :
@@ -109,7 +109,7 @@ function StepTracker({ steps, activeStep }) {
               </span>
             </div>
             {i < steps.length - 1 && (
-              <div className={`flex-1 h-0.5 mt-[18px] mx-1 rounded transition-colors
+              <div className={`flex-1 h-0.5 mt-4.5 mx-1 rounded transition-colors
                 ${isDone ? 'bg-[#0CC8A8]' : 'bg-gray-200 dark:bg-[#2a2a2a]'}`} />
             )}
           </div>
@@ -137,10 +137,10 @@ export default function ScanDetailPage() {
 
       <div className="flex-1 flex flex-col overflow-hidden">
 
-        <header className="flex items-center justify-between px-6 py-4 flex-shrink-0
+        <header className="flex items-center justify-between px-6 py-4 shrink-0
           bg-white dark:bg-[#111] border-b border-gray-200 dark:border-[#1c1c1c]">
           <div className="flex items-center gap-2 text-sm">
-            <button onClick={() => setMobileOpen(true)} className="lg:hidden mr-2 text-gray-500">
+            <button onClick={() => setMobileOpen(true)} aria-label="Open menu" className="lg:hidden mr-2 text-gray-500">
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                 <path d="M3 12h18M3 6h18M3 18h18" />
               </svg>
@@ -149,6 +149,7 @@ export default function ScanDetailPage() {
             <span className="text-gray-300 dark:text-gray-600">/</span>
             <button
               onClick={() => navigate('/dashboard')}
+              aria-label="Go to dashboard"
               className="text-gray-500 dark:text-gray-400 hover:text-[#0CC8A8] transition-colors"
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -215,13 +216,13 @@ export default function ScanDetailPage() {
           </div>
 
           {consoleOpen && (
-            <div className="flex-1 flex overflow-hidden min-h-0">
+            <div className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0">
 
               <div className="flex flex-col flex-1 min-w-0 overflow-hidden
-                border-r border-gray-200 dark:border-[#1c1c1c]
+                border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-[#1c1c1c]
                 bg-white dark:bg-[#111]">
 
-                <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-200 dark:border-[#1c1c1c] flex-shrink-0">
+                <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-200 dark:border-[#1c1c1c] shrink-0">
                   <div className="flex items-center gap-2.5">
                     <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                     <span className="text-sm font-semibold text-gray-900 dark:text-white">Live Scan Console</span>
@@ -254,10 +255,12 @@ export default function ScanDetailPage() {
                   </div>
                 </div>
 
-                <div className="flex border-b border-gray-200 dark:border-[#1c1c1c] flex-shrink-0 px-1">
+                <div className="flex border-b border-gray-200 dark:border-[#1c1c1c] shrink-0 px-1" role="tablist">
                   {[['activity', 'Activity Log'], ['loops', 'Verification Loops']].map(([id, label]) => (
                     <button
                       key={id}
+                      role="tab"
+                      aria-selected={activeTab === id}
                       onClick={() => setActiveTab(id)}
                       className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px
                         ${activeTab === id
@@ -286,7 +289,7 @@ export default function ScanDetailPage() {
                 </div>
               </div>
 
-              <div className="w-80 xl:w-96 shrink-0 flex flex-col overflow-hidden
+              <div className="w-full lg:w-80 xl:w-96 shrink-0 flex flex-col overflow-hidden
                 bg-white dark:bg-[#111]">
                 <div className="px-4 py-2.5 border-b border-gray-200 dark:border-[#1c1c1c] shrink-0">
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Finding Log</h3>

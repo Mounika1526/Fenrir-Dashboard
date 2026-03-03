@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 
 const Icon = ({ d, className = "w-5 h-5" }) => (
@@ -39,7 +39,7 @@ const icons = {
 const navItems = [
   { label: "Dashboard", icon: "dashboard", to: "/dashboard" },
   { label: "Projects", icon: "projects", to: "/projects" },
-  { label: "Scans", icon: "scans", to: "/scan/1" },
+  { label: "Scans", icon: "scans", to: "/scan/1", matchPrefix: "/scan" },
   { label: "Schedule", icon: "schedule", to: "/schedule" },
 ];
 
@@ -50,37 +50,46 @@ const bottomNavItems = [
 ];
 
 function NavItem({ item }) {
+  const location = useLocation();
+  const prefixActive = item.matchPrefix
+    ? location.pathname.startsWith(item.matchPrefix)
+    : false;
+
   return (
     <NavLink
       to={item.to}
-      className={({ isActive }) =>
-        `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150 group
+      className={({ isActive }) => {
+        const active = isActive || prefixActive;
+        return `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150 group
         ${
-          isActive
+          active
             ? "bg-[#0CC8A8]/15 text-[#0CC8A8]"
             : "text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-gray-100"
-        }`
-      }
+        }`;
+      }}
     >
-      {({ isActive }) => (
-        <>
-          <svg
-            className="w-5 h-5 shrink-0"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.8}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d={icons[item.icon]} />
-          </svg>
-          <span>{item.label}</span>
-          {isActive && (
-            <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#0CC8A8]" />
-          )}
-        </>
-      )}
+      {({ isActive }) => {
+        const active = isActive || prefixActive;
+        return (
+          <>
+            <svg
+              className="w-5 h-5 shrink-0"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.8}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d={icons[item.icon]} />
+            </svg>
+            <span>{item.label}</span>
+            {active && (
+              <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#0CC8A8]" />
+            )}
+          </>
+        );
+      }}
     </NavLink>
   );
 }

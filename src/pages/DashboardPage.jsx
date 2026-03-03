@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import StatusChip from "../components/StatusChip";
@@ -104,13 +104,32 @@ const trendColor = {
   Low: "text-green-500",
 };
 
+function SkeletonRow() {
+  return (
+    <tr className="border-b border-gray-100 dark:border-[#1c1c1c] animate-pulse">
+      <td className="px-5 py-4"><div className="h-4 w-28 rounded bg-gray-200 dark:bg-[#2a2a2a]" /></td>
+      <td className="px-5 py-4"><div className="h-4 w-16 rounded bg-gray-200 dark:bg-[#2a2a2a]" /></td>
+      <td className="px-5 py-4"><div className="h-5 w-20 rounded-md bg-gray-200 dark:bg-[#2a2a2a]" /></td>
+      <td className="px-5 py-4"><div className="h-2 w-24 rounded-full bg-gray-200 dark:bg-[#2a2a2a]" /></td>
+      <td className="px-5 py-4"><div className="flex gap-1.5">{[1,2,3,4].map(n => <div key={n} className="w-7 h-7 rounded bg-gray-200 dark:bg-[#2a2a2a]" />)}</div></td>
+      <td className="px-5 py-4"><div className="h-3 w-12 rounded bg-gray-200 dark:bg-[#2a2a2a]" /></td>
+    </tr>
+  );
+}
+
 export default function DashboardPage() {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [toast, setToast] = useState(null);
   const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
   const perPage = 15;
+
+  useEffect(() => {
+    const t = setTimeout(() => setLoading(false), 800);
+    return () => clearTimeout(t);
+  }, []);
 
   const filtered = useMemo(
     () =>
@@ -189,8 +208,8 @@ export default function DashboardPage() {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto">
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3 bg-white dark:bg-[#111] border-b border-gray-200 dark:border-[#1c1c1c]">
+        <main className="flex-1 flex flex-col overflow-hidden">
+          <div className="shrink-0 flex flex-wrap items-center gap-x-6 gap-y-2 px-6 py-3 bg-white dark:bg-[#111] border-b border-gray-200 dark:border-[#1c1c1c]">
             {[
               ["Org", orgStats.org],
               ["Owner", orgStats.owner],
@@ -226,7 +245,7 @@ export default function DashboardPage() {
             </span>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 border-b border-gray-200 dark:border-[#1c1c1c]">
+          <div className="shrink-0 grid grid-cols-2 lg:grid-cols-4 border-b border-gray-200 dark:border-[#1c1c1c]">
             {severityStats.map((s, i) => (
               <div
                 key={s.level}
@@ -253,7 +272,7 @@ export default function DashboardPage() {
             ))}
           </div>
 
-          <div className="p-6">
+          <div className="flex-1 overflow-y-auto p-6">
             <div className="flex flex-wrap items-center gap-3 mb-5">
               <div className="flex-1 min-w-50 flex items-center gap-2 px-4 py-2.5 rounded-lg border border-gray-200 dark:border-[#2a2a2a] bg-white dark:bg-[#161616]">
                 <svg
@@ -275,7 +294,11 @@ export default function DashboardPage() {
                 />
               </div>
 
-              <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium border border-gray-200 dark:border-[#2a2a2a] text-gray-600 dark:text-gray-300 bg-white dark:bg-[#161616] hover:bg-gray-50 dark:hover:bg-[#1e1e1e] transition-colors">
+              <button
+                onClick={() => setToast({ msg: "Filters applied.", type: "info" })}
+                aria-label="Filter scans"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium border border-gray-200 dark:border-[#2a2a2a] text-gray-600 dark:text-gray-300 bg-white dark:bg-[#161616] hover:bg-gray-50 dark:hover:bg-[#1e1e1e] transition-colors"
+              >
                 <svg
                   className="w-4 h-4"
                   viewBox="0 0 24 24"
@@ -290,7 +313,11 @@ export default function DashboardPage() {
                 Filter
               </button>
 
-              <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium border border-gray-200 dark:border-[#2a2a2a] text-gray-600 dark:text-gray-300 bg-white dark:bg-[#161616] hover:bg-gray-50 dark:hover:bg-[#1e1e1e] transition-colors">
+              <button
+                onClick={() => setToast({ msg: "Column settings updated.", type: "info" })}
+                aria-label="Toggle columns"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium border border-gray-200 dark:border-[#2a2a2a] text-gray-600 dark:text-gray-300 bg-white dark:bg-[#161616] hover:bg-gray-50 dark:hover:bg-[#1e1e1e] transition-colors"
+              >
                 <svg
                   className="w-4 h-4"
                   viewBox="0 0 24 24"
@@ -306,7 +333,11 @@ export default function DashboardPage() {
                 Column
               </button>
 
-              <button className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold bg-[#0CC8A8] hover:bg-[#0ab394] text-white transition-colors">
+              <button
+                onClick={() => navigate("/scan/new")}
+                aria-label="Create new scan"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold bg-[#0CC8A8] hover:bg-[#0ab394] text-white transition-colors"
+              >
                 <svg
                   className="w-4 h-4"
                   viewBox="0 0 24 24"
@@ -344,10 +375,16 @@ export default function DashboardPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {paginated.map((scan, idx) => (
+                    {loading ? (
+                      [1,2,3,4,5].map(n => <SkeletonRow key={n} />)
+                    ) : paginated.map((scan, idx) => (
                       <tr
                         key={scan.id}
                         onClick={() => navigate(`/scan/${scan.id}`)}
+                        tabIndex={0}
+                        role="button"
+                        aria-label={`View scan ${scan.name}`}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate(`/scan/${scan.id}`) }}
                         className={`border-b border-gray-100 dark:border-[#1c1c1c] cursor-pointer hover:bg-gray-50 dark:hover:bg-[#1e1e1e] transition-colors ${idx === paginated.length - 1 ? "border-b-0" : ""}`}
                       >
                         <td className="px-5 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
@@ -381,7 +418,7 @@ export default function DashboardPage() {
                         </td>
                       </tr>
                     ))}
-                    {filtered.length === 0 && (
+                    {!loading && filtered.length === 0 && (
                       <tr>
                         <td
                           colSpan={6}
@@ -404,6 +441,7 @@ export default function DashboardPage() {
                   <button
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={page === 1}
+                    aria-label="Previous page"
                     className="w-7 h-7 flex items-center justify-center rounded border border-gray-200 dark:border-[#2a2a2a] text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-30 transition-colors"
                   >
                     <svg
@@ -419,6 +457,7 @@ export default function DashboardPage() {
                   <button
                     onClick={() => setPage((p) => p + 1)}
                     disabled={paginated.length >= filtered.length}
+                    aria-label="Next page"
                     className="w-7 h-7 flex items-center justify-center rounded border border-gray-200 dark:border-[#2a2a2a] text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-30 transition-colors"
                   >
                     <svg

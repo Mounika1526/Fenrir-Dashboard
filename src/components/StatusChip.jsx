@@ -1,4 +1,4 @@
-const config = {
+const statuses = {
   Completed: {
     border: 'border-green-500',
     text:   'text-green-500',
@@ -17,7 +17,7 @@ const config = {
 }
 
 export default function StatusChip({ status }) {
-  const c = config[status] ?? config.Scheduled
+  const c = statuses[status] ?? statuses.Scheduled
   return (
     <span
       className={`inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-medium

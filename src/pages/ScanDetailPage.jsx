@@ -8,7 +8,6 @@ import {
   findings, statusBarData,
 } from '../data/mockData'
 
-/* ── Log segment renderer ── */
 function LogLine({ segments }) {
   return (
     <span>
@@ -33,14 +32,13 @@ function LogLine({ segments }) {
   )
 }
 
-/* ── Circular progress ── */
 function CircularProgress({ value, label }) {
   const r = 44, circ = 2 * Math.PI * r
   const offset = circ - (value / 100) * circ
   return (
-    <div className="relative w-24 h-24 flex-shrink-0">
+    <div className="relative w-28 h-28 flex-shrink-0">
       <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r={r} fill="none" stroke="#222" strokeWidth="6" />
+        <circle cx="50" cy="50" r={r} fill="#111" stroke="#222" strokeWidth="6" />
         <circle
           cx="50" cy="50" r={r} fill="none"
           stroke="#0CC8A8" strokeWidth="6"
@@ -51,20 +49,51 @@ function CircularProgress({ value, label }) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-xl font-bold text-white leading-none">{value}%</span>
+        <span className="text-2xl font-bold text-white leading-none">{value}%</span>
         <span className="text-[10px] text-gray-400 mt-0.5">{label}</span>
       </div>
     </div>
   )
 }
 
-/* ── Step tracker ── */
+const stepIcons = {
+  Spidering: (cls) => (
+    <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+    </svg>
+  ),
+  Mapping: (cls) => (
+    <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
+      <rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />
+    </svg>
+  ),
+  Testing: (cls) => (
+    <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 3h6M10 3v5.172a2 2 0 01-.586 1.414l-3.828 3.828A2 2 0 005 14.828V19a2 2 0 002 2h10a2 2 0 002-2v-4.172a2 2 0 00-.586-1.414l-3.828-3.828A2 2 0 0114 8.172V3" />
+    </svg>
+  ),
+  Validating: (cls) => (
+    <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 6L9 17l-5-5" />
+    </svg>
+  ),
+  Reporting: (cls) => (
+    <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+      <polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline points="10 9 9 9 8 9" />
+    </svg>
+  ),
+}
+
 function StepTracker({ steps, activeStep }) {
   return (
     <div className="flex items-start flex-1 min-w-0 overflow-x-auto pb-1">
       {steps.map((step, i) => {
         const isActive = i === activeStep
         const isDone   = i < activeStep
+        const iconCls  = `w-4 h-4 ${isActive ? 'text-black' : isDone ? 'text-[#0CC8A8]' : 'text-gray-400'}`
+        const renderIcon = stepIcons[step] || stepIcons.Spidering
         return (
           <div key={step} className="flex items-start flex-1 min-w-0">
             <div className="flex flex-col items-center flex-shrink-0">
@@ -72,20 +101,7 @@ function StepTracker({ steps, activeStep }) {
                 ${isActive ? 'bg-[#0CC8A8] border-[#0CC8A8]' :
                   isDone   ? 'bg-[#0CC8A8]/20 border-[#0CC8A8]' :
                              'bg-gray-100 dark:bg-[#222] border-gray-300 dark:border-[#333]'}`}>
-                {isActive ? (
-                  <svg className="w-4 h-4 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                    <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
-                  </svg>
-                ) : isDone ? (
-                  <svg className="w-4 h-4 text-[#0CC8A8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
-                ) : (
-                  <svg className="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-                    <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
-                    <rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />
-                  </svg>
-                )}
+                {renderIcon(iconCls)}
               </div>
               <span className={`text-[11px] mt-1.5 font-medium whitespace-nowrap
                 ${isActive ? 'text-[#0CC8A8]' : 'text-gray-400 dark:text-gray-500'}`}>
@@ -93,7 +109,7 @@ function StepTracker({ steps, activeStep }) {
               </span>
             </div>
             {i < steps.length - 1 && (
-              <div className={`flex-1 h-0.5 mt-4.5 mx-1 rounded transition-colors
+              <div className={`flex-1 h-0.5 mt-[18px] mx-1 rounded transition-colors
                 ${isDone ? 'bg-[#0CC8A8]' : 'bg-gray-200 dark:bg-[#2a2a2a]'}`} />
             )}
           </div>
@@ -116,78 +132,67 @@ export default function ScanDetailPage() {
   function showToast(msg, type = 'info') { setToast({ msg, type }) }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#F4F5F7] dark:bg-[#0F0F0F]">
+    <div className="flex h-screen overflow-hidden bg-gray-100 dark:bg-[#0F0F0F]">
       <Sidebar mobileOpen={mobileOpen} onMobileClose={() => setMobileOpen(false)} />
 
       <div className="flex-1 flex flex-col overflow-hidden">
 
-        {/* ── Header ── */}
-        <header className="flex items-center justify-between px-6 h-14 flex-shrink-0
-          bg-white dark:bg-[#111111] border-b border-gray-200 dark:border-[#1C1C1C]">
-          <div className="flex items-center gap-2">
+        <header className="flex items-center justify-between px-6 py-4 flex-shrink-0
+          bg-white dark:bg-[#111] border-b border-gray-200 dark:border-[#1c1c1c]">
+          <div className="flex items-center gap-2 text-sm">
             <button onClick={() => setMobileOpen(true)} className="lg:hidden mr-2 text-gray-500">
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                 <path d="M3 12h18M3 6h18M3 18h18" />
               </svg>
             </button>
-            <span className="text-sm font-semibold text-gray-900 dark:text-white">Scan</span>
-            <svg className="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-              <path d="M9 18l6-6-6-6" />
-            </svg>
+            <span className="font-semibold text-gray-900 dark:text-white">Scan</span>
+            <span className="text-gray-300 dark:text-gray-600">/</span>
             <button
               onClick={() => navigate('/dashboard')}
-              className="text-sm text-gray-500 dark:text-gray-400 hover:text-[#0CC8A8] flex items-center gap-1"
+              className="text-gray-500 dark:text-gray-400 hover:text-[#0CC8A8] transition-colors"
             >
-              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                 <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
               </svg>
             </button>
-            <svg className="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-              <path d="M9 18l6-6-6-6" />
-            </svg>
+            <span className="text-gray-300 dark:text-gray-600">/</span>
             <button
               onClick={() => navigate('/dashboard')}
-              className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+              className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               {scan.project}
             </button>
-            <svg className="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-            <span className="text-sm font-medium text-[#0CC8A8]">{scan.name}</span>
+            <span className="text-gray-300 dark:text-gray-600">/</span>
+            <span className="font-medium text-[#0CC8A8]">{scan.name}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => showToast('Report exported!', 'success')}
-              className="px-4 py-1.5 text-sm font-medium rounded-lg border border-gray-300 dark:border-[#333]
+              className="px-5 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-[#333]
                 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
             >
               Export Report
             </button>
             <button
               onClick={() => showToast('Scan stopped.', 'error')}
-              className="px-4 py-1.5 text-sm font-medium rounded-lg border border-red-300 dark:border-red-500/40
-                text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+              className="px-5 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-[#333]
+                text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
             >
               Stop Scan
             </button>
           </div>
         </header>
 
-        {/* ── Page body ── */}
         <div className="flex-1 flex flex-col overflow-hidden">
 
-          {/* Scan progress section */}
-          <div className="flex-shrink-0 bg-white dark:bg-[#111111] border-b border-gray-200 dark:border-[#1C1C1C] px-6 py-5">
+          <div className="shrink-0 bg-white dark:bg-[#111] border-b border-gray-200 dark:border-[#1c1c1c] px-6 py-5">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-              {/* Circular progress */}
               <CircularProgress value={scan.progress} label={scan.status} />
 
               <div className="flex-1 min-w-0 flex flex-col gap-4">
-                {/* Step tracker */}
                 <StepTracker steps={scan.steps} activeStep={scan.activeStep} />
 
-                {/* Metadata row */}
                 <div className="flex flex-wrap gap-x-8 gap-y-2">
                   {[
                     ['Scan Type',    scan.scanType],
@@ -209,17 +214,14 @@ export default function ScanDetailPage() {
             </div>
           </div>
 
-          {/* Console + Findings split */}
           {consoleOpen && (
             <div className="flex-1 flex overflow-hidden min-h-0">
 
-              {/* Left: Live scan console */}
               <div className="flex flex-col flex-1 min-w-0 overflow-hidden
-                border-r border-gray-200 dark:border-[#1C1C1C]
-                bg-white dark:bg-[#111111]">
+                border-r border-gray-200 dark:border-[#1c1c1c]
+                bg-white dark:bg-[#111]">
 
-                {/* Console header */}
-                <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-200 dark:border-[#1C1C1C] flex-shrink-0">
+                <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-200 dark:border-[#1c1c1c] flex-shrink-0">
                   <div className="flex items-center gap-2.5">
                     <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                     <span className="text-sm font-semibold text-gray-900 dark:text-white">Live Scan Console</span>
@@ -252,8 +254,7 @@ export default function ScanDetailPage() {
                   </div>
                 </div>
 
-                {/* Tabs */}
-                <div className="flex border-b border-gray-200 dark:border-[#1C1C1C] flex-shrink-0 px-1">
+                <div className="flex border-b border-gray-200 dark:border-[#1c1c1c] flex-shrink-0 px-1">
                   {[['activity', 'Activity Log'], ['loops', 'Verification Loops']].map(([id, label]) => (
                     <button
                       key={id}
@@ -269,17 +270,15 @@ export default function ScanDetailPage() {
                   ))}
                 </div>
 
-                {/* Log output */}
                 <div className="flex-1 overflow-y-auto p-4 bg-[#0D0D0D] font-mono text-xs leading-relaxed space-y-3">
                   {logEntries.map((entry, i) => (
                     <div key={i} className="flex gap-2">
-                      <span className="text-gray-500 select-none flex-shrink-0">[{entry.time}]</span>
-                      <span className="text-gray-300 whitespace-pre-wrap break-words">
+                      <span className="text-gray-500 select-none shrink-0">[{entry.time}]</span>
+                      <span className="text-gray-300 whitespace-pre-wrap wrap-break-word">
                         <LogLine segments={entry.segments} />
                       </span>
                     </div>
                   ))}
-                  {/* Cursor blink */}
                   <div className="flex gap-2">
                     <span className="text-gray-500 select-none">{'>'}</span>
                     <span className="inline-block w-2 h-3.5 bg-[#0CC8A8] animate-pulse" />
@@ -287,10 +286,9 @@ export default function ScanDetailPage() {
                 </div>
               </div>
 
-              {/* Right: Finding log */}
-              <div className="w-80 xl:w-96 flex-shrink-0 flex flex-col overflow-hidden
-                bg-white dark:bg-[#111111]">
-                <div className="px-4 py-2.5 border-b border-gray-200 dark:border-[#1C1C1C] flex-shrink-0">
+              <div className="w-80 xl:w-96 shrink-0 flex flex-col overflow-hidden
+                bg-white dark:bg-[#111]">
+                <div className="px-4 py-2.5 border-b border-gray-200 dark:border-[#1c1c1c] shrink-0">
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Finding Log</h3>
                 </div>
                 <div className="flex-1 overflow-y-auto p-3 space-y-3">
@@ -318,7 +316,6 @@ export default function ScanDetailPage() {
             </div>
           )}
 
-          {/* Console reopener when closed */}
           {!consoleOpen && (
             <div className="flex-1 flex items-center justify-center">
               <button
@@ -333,9 +330,8 @@ export default function ScanDetailPage() {
           )}
         </div>
 
-        {/* ── Status bar ── */}
-        <div className="flex-shrink-0 flex flex-wrap items-center gap-x-5 gap-y-1 px-4 py-2
-          bg-[#0D0D0D] border-t border-[#1C1C1C] text-xs">
+        <div className="shrink-0 flex flex-wrap items-center gap-x-5 gap-y-1 px-4 py-2
+          bg-[#0D0D0D] border-t border-[#1c1c1c] text-xs">
           <span className="flex items-center gap-1.5 text-gray-400">
             <span className="w-1.5 h-1.5 rounded-full bg-gray-500" />
             Sub-agents: <strong className="text-white">{statusBarData.subAgents}</strong>

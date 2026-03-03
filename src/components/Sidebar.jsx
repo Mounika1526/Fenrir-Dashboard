@@ -184,7 +184,7 @@ export default function Sidebar({ mobileOpen, onMobileClose }) {
           </button>
 
           <div className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 cursor-pointer transition-colors">
-            <div className="w-8 h-8 rounded-full bg-linear-to from-orange-400 to-pink-500 shrink-0 flex items-center justify-center text-white text-xs font-bold">
+            <div className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-white text-xs font-bold ${isDark ? "bg-[#0CC8A8]" : "bg-[#0a9e86]"}`}>
               A
             </div>
             <div className="flex-1 min-w-0">

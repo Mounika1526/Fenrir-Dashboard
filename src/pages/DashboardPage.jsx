@@ -1,9 +1,11 @@
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import CountUp from "react-countup";
 import Sidebar from "../components/Sidebar";
 import StatusChip from "../components/StatusChip";
 import Toast from "../components/Toast";
 import { orgStats, severityStats, scans } from "../data/mockData";
+
 
 function SeverityIcon({ level }) {
   const cls = "w-7 h-7 text-gray-400 dark:text-gray-500 flex-shrink-0";
@@ -79,6 +81,15 @@ function VulnBadge({ count, type }) {
 
 function ProgressBar({ progress, status }) {
   const fill = status === "Failed" ? "bg-red-500" : "bg-[#0CC8A8]";
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setCurrent(progress);
+    }, 80);
+    return () => clearTimeout(timeout);
+  }, [progress]);
+
   return (
     <div className="flex items-center gap-3">
       <div
@@ -87,11 +98,14 @@ function ProgressBar({ progress, status }) {
       >
         <div
           className={`h-full rounded-full ${fill}`}
-          style={{ width: `${progress}%` }}
+          style={{
+            width: `${current}%`,
+            transition: "width 1.2s cubic-bezier(0.4, 0, 0.2, 1)",
+          }}
         />
       </div>
       <span className="text-xs tabular-nums text-gray-500 dark:text-gray-400 w-8 text-right">
-        {progress}%
+        <CountUp end={progress} duration={1.2} suffix="%" />
       </span>
     </div>
   );
@@ -259,7 +273,7 @@ export default function DashboardPage() {
                   <SeverityIcon level={s.level} />
                 </div>
                 <p className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
-                  {s.count}
+                  <CountUp end={s.count} duration={2} separator="," />
                 </p>
                 <p className={`text-xs font-medium ${trendColor[s.level]}`}>
                   {s.direction === "up" ? "↑" : "↓"} +{s.change}%{" "}

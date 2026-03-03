@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
+import MetaIcon from "../components/icons/meta";
 
 const features = [
   "Effortlessly spider and map targets to uncover hidden security flaws",
@@ -71,13 +72,12 @@ export default function LoginPage() {
     <div
       className="relative min-h-screen w-full overflow-y-auto"
       style={{
-        background: `
-          radial-gradient(ellipse 80% 55% at 8% 8%,  rgba(12,200,168,0.22) 0%, transparent 60%),
-          radial-gradient(ellipse 60% 65% at 92% 98%, rgba(210,60,12,0.32) 0%, transparent 58%),
-          radial-gradient(ellipse 50% 35% at 55% 72%, rgba(150,65,8,0.12)  0%, transparent 50%),
-          #060e0a
-        `,
-      }}
+          background: `
+            radial-gradient(ellipse 60% 55% at 5% 5%,   rgba(6,150,115,0.18)  0%, transparent 65%),
+            radial-gradient(ellipse 90% 80% at 100% 100%, rgba(230,75,8,0.92)  0%, rgba(170,30,4,0.65) 40%, transparent 72%),
+            #0d0d0d
+          `,
+        }}
     >
       <div className="absolute top-5 left-6 z-20 flex items-center gap-2.5">
         <div className="w-8 h-8 rounded-full bg-[#0CC8A8] flex items-center justify-center">
@@ -278,7 +278,7 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full rounded-lg bg-[#0CC8A8] hover:bg-[#0ab394] active:bg-[#089e82]
                 text-white font-semibold py-3.5 text-sm transition-colors
-                disabled:opacity-70 disabled:cursor-not-allowed mt-1"
+                disabled:opacity-70 disabled:cursor-not-allowed mt-1 rounded-3xl"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -343,16 +343,9 @@ export default function LoginPage() {
               <button
                 type="button"
                 aria-label="Continue with Meta"
-                className="flex items-center justify-center rounded-xl bg-[#0866FF]
-                  hover:bg-[#0759e0] text-white py-3 transition-colors"
+                className="flex items-center justify-center rounded-xl bg-blue-600 hover:bg-blue-700 border border-gray-200 py-3 transition-colors"
               >
-                <svg
-                  className="w-5 h-5"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path d="M12 2.04C6.5 2.04 2 6.53 2 12.06 2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96 15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z" />
-                </svg>
+                <MetaIcon className="w-6 h-4 text-white" />
               </button>
             </div>
           </form>

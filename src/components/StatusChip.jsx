@@ -4,6 +4,11 @@ const statuses = {
     text:   'text-green-500',
     bg:     'bg-green-500/10',
   },
+  'In Progress': {
+    border: 'border-amber-500',
+    text:   'text-amber-500',
+    bg:     'bg-amber-500/10',
+  },
   Scheduled: {
     border: 'border-gray-400 dark:border-gray-500',
     text:   'text-gray-500 dark:text-gray-400',

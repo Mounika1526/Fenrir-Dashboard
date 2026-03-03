@@ -168,7 +168,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <div className="w-full max-w-md shrink-0 bg-white rounded-2xl shadow-2xl px-8 py-9">
+        <div className="login-inputs w-full max-w-md shrink-0 bg-white rounded-2xl shadow-2xl px-8 py-9">
           <h2 className="text-2xl font-bold text-gray-900 text-center mb-1">
             Sign up
           </h2>

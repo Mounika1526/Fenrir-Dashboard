@@ -4,7 +4,7 @@ import CountUp from "react-countup";
 import Sidebar from "../components/Sidebar";
 import StatusChip from "../components/StatusChip";
 import Toast from "../components/Toast";
-import { orgStats, severityStats, scans } from "../data/mockData";
+import { orgStats, severityStats, scans, activeScan } from "../data/mockData";
 
 
 function SeverityIcon({ level }) {
@@ -165,59 +165,68 @@ export default function DashboardPage() {
       />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <header className="flex items-center justify-between px-6 py-4 shrink-0 bg-white dark:bg-[#111] border-b border-gray-200 dark:border-[#1c1c1c]">
-          <div className="flex items-center gap-2 text-sm">
+        <header className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 shrink-0
+          bg-white dark:bg-[#111] border-b border-gray-200 dark:border-[#1c1c1c]">
+          <div className="flex items-center gap-1.5 sm:gap-2 text-sm min-w-0 mr-3">
             <button
               onClick={() => setMobileOpen(true)}
-              className="lg:hidden mr-2 text-gray-500"
+              className="lg:hidden mr-1 text-gray-500 shrink-0"
               aria-label="Menu"
             >
-              <svg
-                className="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                 <path d="M3 12h18M3 6h18M3 18h18" />
               </svg>
             </button>
-            <span className="font-semibold text-gray-900 dark:text-white">
-              Scan
-            </span>
-            <span className="text-gray-300 dark:text-gray-600">/</span>
-            <svg
-              className="w-3.5 h-3.5 text-gray-400"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
+            <span className="font-semibold text-gray-900 dark:text-white shrink-0">Scan</span>
+            <span className="text-gray-300 dark:text-gray-600 shrink-0">/</span>
+            <svg className="w-3.5 h-3.5 text-gray-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
               <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
               <polyline points="9 22 9 12 15 12 15 22" />
             </svg>
-            <span className="text-gray-300 dark:text-gray-600">/</span>
-            <span className="text-gray-500 dark:text-gray-400">
-              Private Assets
+            <span className="text-gray-300 dark:text-gray-600 shrink-0 hidden sm:block">/</span>
+            <span className="hidden sm:block text-gray-500 dark:text-gray-400 truncate max-w-28">
+              {activeScan.project}
             </span>
-            <span className="text-gray-300 dark:text-gray-600">/</span>
-            <span className="font-medium text-[#0CC8A8]">New Scan</span>
+            <span className="text-gray-300 dark:text-gray-600 shrink-0">/</span>
+            <span className="font-medium text-[#0CC8A8] truncate">{activeScan.name}</span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 shrink-0">
             <button
-              onClick={() =>
-                setToast({ msg: "Report exported!", type: "success" })
-              }
-              className="px-5 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-[#333] text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+              onClick={() => setToast({ msg: "Report exported!", type: "success" })}
+              className="hidden sm:flex px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-[#333]
+                text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
             >
               Export Report
             </button>
             <button
               onClick={() => setToast({ msg: "Scan stopped.", type: "error" })}
-              className="px-5 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-[#333] text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+              className="hidden sm:flex px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-[#333]
+                text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
             >
               Stop Scan
+            </button>
+            <button
+              onClick={() => setToast({ msg: "Report exported!", type: "success" })}
+              aria-label="Export report"
+              className="sm:hidden w-8 h-8 flex items-center justify-center rounded-lg border border-gray-300 dark:border-[#333]
+                text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+            </button>
+            <button
+              onClick={() => navigate("/scan/new")}
+              aria-label="New scan"
+              className="sm:hidden flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-[#0CC8A8] hover:bg-[#0ab394] text-white transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              New
             </button>
           </div>
         </header>
@@ -263,23 +272,23 @@ export default function DashboardPage() {
             {severityStats.map((s, i) => (
               <div
                 key={s.level}
-                className={`px-6 py-5 bg-white dark:bg-[#111]
+                className={`px-4 py-4 sm:px-6 sm:py-5 bg-white dark:bg-[#111]
                   ${i < severityStats.length - 1 ? "border-r border-gray-200 dark:border-[#1c1c1c]" : ""}`}
               >
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
+                <div className="flex items-center justify-between mb-2 sm:mb-3">
+                  <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                     {s.level} Severity
                   </span>
                   <SeverityIcon level={s.level} />
                 </div>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
+                <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-1">
                   <CountUp end={s.count} duration={2} separator="," />
                 </p>
-                <p className={`text-xs font-medium ${trendColor[s.level]}`}>
+                <p className={`text-[11px] sm:text-xs font-medium ${trendColor[s.level]}`}>
                   {s.direction === "up" ? "↑" : "↓"} +{s.change}%{" "}
                   <span className="text-gray-400 font-normal">
-                    {s.direction === "up" ? "increase" : "decrease"} than
-                    yesterday
+                    <span className="hidden sm:inline">{s.direction === "up" ? "increase" : "decrease"} than yesterday</span>
+                    <span className="sm:hidden">vs yesterday</span>
                   </span>
                 </p>
               </div>

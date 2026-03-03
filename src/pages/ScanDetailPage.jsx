@@ -304,7 +304,7 @@ export default function ScanDetailPage() {
                   {logEntries.map((entry, i) => (
                     <div key={i} className="flex gap-2 min-w-0">
                       <span className="text-gray-500 select-none shrink-0">[{entry.time}]</span>
-                      <span className="text-gray-300 break-words min-w-0 flex-1">
+                      <span className="text-gray-300 wrap-break-word min-w-0 flex-1">
                         <LogLine segments={entry.segments} />
                       </span>
                     </div>

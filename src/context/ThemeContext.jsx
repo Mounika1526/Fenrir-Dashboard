@@ -5,7 +5,7 @@ const ThemeContext = createContext()
 export function ThemeProvider({ children }) {
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem('aps-theme')
-    return saved ? saved === 'dark' : true   // default: dark
+    return saved ? saved === 'dark' : true 
   })
 
   useEffect(() => {
@@ -25,4 +25,5 @@ export function ThemeProvider({ children }) {
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useTheme = () => useContext(ThemeContext)
